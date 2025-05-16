@@ -1,15 +1,10 @@
-const createHttpError = require("http-errors");
-const knownClients = ["localhost", process.env.CLIENT_URL];
+const allowedOrigins = ["http://localhost:5173", process.env.CLIENT_URL];
 
 const corsOptions = {
   origin: (origin, cb) => {
-    if (!origin || knownClients.includes(origin)) {
-      cb(null);
-    } else {
-      cb(createHttpError(403, "Origin not allowed by CORS"));
-    }
+    if (!origin || allowedOrigins.includes(origin)) cb(null, true);
+    else cb(new Error("Block by CORS:" + origin));
   },
-  credentials: true,
 };
 
 module.exports = corsOptions;
